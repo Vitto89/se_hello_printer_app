@@ -1,41 +1,30 @@
 name: Package Project
 
-# kiedy mam uruchomic automatyzacje
 on: [ push ]
 
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
-
     steps:
-      # pobierz kod
       - uses: actions/checkout@v3
-      # moja aplikacja jest w Pythonie
       - name: Set up Python 3
         uses: actions/setup-python@v3
-      # instalacja wymaganych bibliotek
       - name: Install deps
         run: make deps
-      - name: linter
+      - name: Linter
         run: make lint
-      # testy!!!!!
       - name: Tests
         run: make test
-    docker:
-      runs-on: ubuntu-latest
-      steps:
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      -
-        name: Login to Docker Hub
-        uses: docker/login-action@v2
+      - name: Build and push
+        uses: docker/build-push-action@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          push: true
+          tags: user/app:latest
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+    permissions:
+      packages: write
       -
         name: Build and push
         uses: docker/build-push-action@v4

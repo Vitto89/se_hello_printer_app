@@ -22,7 +22,7 @@ jobs:
       - name: Tests
         run: make test
       #docker
-    docker:
+docker:
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
